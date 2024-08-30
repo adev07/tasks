@@ -105,15 +105,13 @@ const Users = () => {
   // Handle search input change
   const handleSearchChange = (query) => {
     setSearchQuery(query);
-    setNameQuery("");
-    setEmailQuery("");
-    setBirthDateRange("");
-    setSelectedGender("");
+    resetFilters();
   };
 
   // Handle email input change
   const handleEmailChange = (query) => {
     setEmailQuery(query);
+    resetFilters("email");
   };
 
   // Handle page change for pagination
@@ -123,43 +121,38 @@ const Users = () => {
 
   // Handle filter dropdown changes
   const handleFilterChange = (filterType, value) => {
+    resetFilters(filterType);
     switch (filterType) {
       case "name":
         setNameQuery(value);
-        setEmailQuery("");
-        setBirthDateRange("");
-        setSelectedGender("");
-        setSearchQuery("");
         break;
       case "email":
         setEmailQuery(value);
-        setNameQuery("");
-        setBirthDateRange("");
-        setSelectedGender("");
-        setSearchQuery("");
         break;
       case "birthDate":
         setBirthDateRange(value);
-        setNameQuery("");
-        setEmailQuery("");
-        setSelectedGender("");
-        setSearchQuery("");
         break;
       case "gender":
         setSelectedGender(value);
-        setNameQuery("");
-        setEmailQuery("");
-        setBirthDateRange("");
-        setSearchQuery("");
         break;
       default:
         break;
     }
     setCurrentPage(1);
+    setFilterDropdown(null); // Close dropdown after selection
   };
 
   const handleDropdownToggle = (filterType) => {
     setFilterDropdown((prev) => (prev === filterType ? null : filterType));
+  };
+
+  // Reset other filters when one is applied
+  const resetFilters = (exclude = "") => {
+    if (exclude !== "name") setNameQuery("");
+    if (exclude !== "email") setEmailQuery("");
+    if (exclude !== "birthDate") setBirthDateRange("");
+    if (exclude !== "gender") setSelectedGender("");
+    setSearchQuery("");
   };
 
   const totalPages = Math.ceil(totalUsers / pageSize);
@@ -170,10 +163,8 @@ const Users = () => {
         label: "Name",
         type: "name",
         value: nameQuery,
-        onChange: (name, value) => {
-          handleFilterChange(name, value);
-        },
-        options: users.map((user) => `${user.firstName}`),
+        onChange: (name, value) => handleFilterChange(name, value),
+        options: users.map((user) => user.firstName),
         placeholder: "Search by name",
       },
       {
@@ -181,31 +172,25 @@ const Users = () => {
         type: "email",
         placeholder: "Search by email",
         key: "email",
-        options: users.map((user) => `${user.email}`),
+        options: users.map((user) => user.email),
         value: emailQuery,
-        onChange: (name, value) => {
-          handleFilterChange(name, value);
-        },
+        onChange: (name, value) => handleFilterChange(name, value),
       },
       {
         label: "Birth Date",
         type: "birthDate",
         value: birthDateRange,
-        onChange: (name, value) => {
-          handleFilterChange(name, value);
-        },
+        onChange: (name, value) => handleFilterChange(name, value),
       },
       {
         label: "Gender",
         options: ["male", "female"],
         selectedValue: selectedGender,
-        onChange: (name, value) => {
-          handleFilterChange(name, value);
-        },
+        onChange: (name, value) => handleFilterChange(name, value),
         type: "gender",
       },
     ];
-  }, [nameQuery, emailQuery, birthDateRange, selectedGender]);
+  }, [nameQuery, emailQuery, birthDateRange, selectedGender, users]);
 
   return (
     <div style={styles.container}>
@@ -240,7 +225,6 @@ const Users = () => {
 const styles = {
   container: {
     padding: "20px",
-    
   },
 };
 
