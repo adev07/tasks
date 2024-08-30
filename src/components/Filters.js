@@ -25,6 +25,11 @@ const Filter = ({ label, options = [], selectedValue, onChange, isOpen, onToggle
   }
 
   // Default dropdown behavior for other types
+  const handleOptionClick = (option) => {
+    onChange(option);  // Update the selected value
+    onToggle();        // Close the dropdown
+  };
+
   return (
     <div style={styles.filterWrapper}>
       <label onClick={onToggle} style={styles.filterLabel}>
@@ -37,7 +42,7 @@ const Filter = ({ label, options = [], selectedValue, onChange, isOpen, onToggle
             <div
               key={option}
               style={styles.dropdownItem}
-              onClick={() => onChange(option)}
+              onClick={() => handleOptionClick(option)} // Close on select
             >
               {option}
             </div>
@@ -62,7 +67,6 @@ const styles = {
   filterWrapper: {
     position: 'relative',
     marginRight: '20px',
-    color: '#322625',
   },
   filterLabel: {
     cursor: 'pointer',
@@ -84,6 +88,7 @@ const styles = {
     padding: '10px',
     cursor: 'pointer',
     borderBottom: '1px solid #ddd',
+    transition: 'background-color 0.2s ease',
   },
   filterSelect: {
     width: '100%',
