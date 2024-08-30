@@ -82,10 +82,13 @@ const styles = {
   },
   entriesText: {
     marginLeft: '5px',
+    fontFamily: "'Neutra Text Alt', sans-serif",
+    color: '#322625',
   },
   filtersContainer: {
     display: 'flex',
     alignItems: 'center',
+    fontFamily: "'Neutra Text Alt', sans-serif",
   },
   separator: {
     width: '1px',

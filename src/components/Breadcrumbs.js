@@ -7,7 +7,7 @@ const Breadcrumbs = ({ items }) => {
   const navigate = useNavigate();
 
   return (
-    <MuiBreadcrumbs aria-label="breadcrumb" sx={{ marginBottom: '20px' }}>
+    <MuiBreadcrumbs style={{fontFamily: "'Neutra Text Alt', sans-serif",}} aria-label="breadcrumb" sx={{ marginBottom: '20px' }}>
       {items.map((item, index) => (
         <React.Fragment key={index}>
           {item.link ? (
@@ -28,7 +28,7 @@ const Breadcrumbs = ({ items }) => {
                 }),
               }}
             >
-              <span className={index === 1 ? 'highlight' : ''}>
+              <span style={{color:"#322625"}} className={index === 1 ? 'highlight' : ''}>
                 {item.label}
               </span>
             </Link>

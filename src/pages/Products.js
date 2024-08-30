@@ -222,6 +222,7 @@ const Products = () => {
 const styles = {
   container: {
     padding: '20px',
+    fontFamily: "'Neutra Text Alt', sans-serif",
   },
 };
 

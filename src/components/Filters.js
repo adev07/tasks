@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const Filter = ({ label, options = [], selectedValue, onChange, isOpen, onToggle, type }) => {
-  if(type === 'birthDate'){
+  // Handling birthDate filter separately
+  if (type === 'birthDate') {
     return (
       <div style={styles.filterWrapper}>
         <label onClick={onToggle} style={styles.filterLabel}>
@@ -11,15 +12,19 @@ const Filter = ({ label, options = [], selectedValue, onChange, isOpen, onToggle
         </label>
         {isOpen && (
           <div style={styles.filterOptions}>
-            <input type="date" value={selectedValue} onChange={(e) => {
-              console.log(e.target.value)
-              onChange(e.target.value)
-            }} style={styles.filterSelect} />
+            <input
+              type="date"
+              value={selectedValue}
+              onChange={(e) => onChange(e.target.value)}
+              style={styles.filterSelect}
+            />
           </div>
         )}
       </div>
-    )
+    );
   }
+
+  // Default dropdown behavior for other types
   return (
     <div style={styles.filterWrapper}>
       <label onClick={onToggle} style={styles.filterLabel}>
@@ -27,19 +32,16 @@ const Filter = ({ label, options = [], selectedValue, onChange, isOpen, onToggle
         <span style={styles.arrow}>▼</span>
       </label>
       {isOpen && (
-        <div style={styles.filterOptions}>
-          <select
-            value={selectedValue}
-            onChange={(e) => onChange(e.target.value)}
-            style={styles.filterSelect}
-          >
-            <option value="">Select {label}</option>
-            {options.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
+        <div style={styles.customDropdown}>
+          {options.map((option) => (
+            <div
+              key={option}
+              style={styles.dropdownItem}
+              onClick={() => onChange(option)}
+            >
+              {option}
+            </div>
+          ))}
         </div>
       )}
     </div>
@@ -53,12 +55,14 @@ Filter.propTypes = {
   onChange: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
   onToggle: PropTypes.func.isRequired,
+  type: PropTypes.string, // Optional prop type for filter type
 };
 
 const styles = {
   filterWrapper: {
     position: 'relative',
     marginRight: '20px',
+    color: '#322625',
   },
   filterLabel: {
     cursor: 'pointer',
@@ -66,7 +70,7 @@ const styles = {
   arrow: {
     marginLeft: '5px',
   },
-  filterOptions: {
+  customDropdown: {
     position: 'absolute',
     top: '100%',
     left: 0,
@@ -75,6 +79,11 @@ const styles = {
     borderRadius: '4px',
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
     zIndex: 1000,
+  },
+  dropdownItem: {
+    padding: '10px',
+    cursor: 'pointer',
+    borderBottom: '1px solid #ddd',
   },
   filterSelect: {
     width: '100%',
