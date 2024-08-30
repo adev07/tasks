@@ -78,6 +78,7 @@ const styles = {
   pageSizeSelect: {
     padding: '5px',
     marginRight: '10px',
+    border: 'none',
   },
   entriesText: {
     marginLeft: '5px',

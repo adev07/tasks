@@ -1,4 +1,3 @@
-// src/components/DataTable.js
 import React from 'react';
 
 const DataTable = ({ columns, rows, loading }) => {
@@ -16,7 +15,12 @@ const DataTable = ({ columns, rows, loading }) => {
       <tbody>
         {rows.length > 0 ? (
           rows.map((row, index) => (
-            <tr key={index}>
+            <tr
+              key={index}
+              style={styles.tr}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#ebebeb'} // Apply gray shade on hover
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = ''} // Remove gray shade on hover leave
+            >
               {columns.map(col => (
                 <td key={col.field} style={styles.td}>{row[col.field]}</td>
               ))}
@@ -43,15 +47,21 @@ const styles = {
     backgroundColor: '#c0e3e5',
     padding: '8px',
     textAlign: 'center',
-    fontWeight: '700',
+    fontWeight: '900',
     fontFamily: "'Neutra Text Alt', sans-serif",
+    color: '#322625',
   },
   td: {
     border: '1px solid #ebebeb',
     padding: '8px',
     textAlign: 'center',
-    fontWeight: '700',
+    fontWeight: '500',
     fontFamily: "'Neutra Text Alt', sans-serif",
+    color: '#322625',
+  },
+  tr: {
+    cursor: 'pointer',
+    transition: 'background-color 0.3s ease',
   },
 };
 

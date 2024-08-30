@@ -1,4 +1,3 @@
-// pages/Users.js
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import DataTable from "../components/DataTable";
@@ -31,9 +30,9 @@ const Users = () => {
   const [selectedGender, setSelectedGender] = useState("");
   const [birthDateRange, setBirthDateRange] = useState("");
   const [filterDropdown, setFilterDropdown] = useState(null);
-  const [totalUsers, setTotalUsers] = useState(0); // State to track total number of users
+  const [totalUsers, setTotalUsers] = useState(0);
 
-  // Fetch data whenever the page size or current page changes
+  // Fetch all users or filtered users based on the search query
   const fetchUsers = async (pageSize, currentPage) => {
     setLoading(true);
     try {
@@ -46,7 +45,7 @@ const Users = () => {
       });
       setUsers(response.data.users);
       setFilteredUsers(response.data.users);
-      setTotalUsers(response.data.total || 0); // Update totalUsers based on API response
+      setTotalUsers(response.data.total || 0);
     } catch (error) {
       console.error("Error fetching users:", error);
     } finally {
@@ -54,6 +53,7 @@ const Users = () => {
     }
   };
 
+  // Fetch filtered users based on filter criteria
   const fetchFilteredUsers = async (pageSize, currentPage) => {
     setLoading(true);
     let params = {
@@ -79,7 +79,7 @@ const Users = () => {
       });
       setUsers(response.data.users);
       setFilteredUsers(response.data.users);
-      setTotalUsers(response.data.total || 0); // Update totalUsers based on API response
+      setTotalUsers(response.data.total || 0);
     } catch (error) {
       console.error("Error fetching users:", error);
     } finally {
@@ -87,65 +87,22 @@ const Users = () => {
     }
   };
 
+  // UseEffect to handle fetching users or filtered users when searchQuery or filter criteria change
   useEffect(() => {
     if (selectedGender || birthDateRange || emailQuery || nameQuery) {
       fetchFilteredUsers(pageSize, currentPage);
+    } else {
+      fetchUsers(pageSize, currentPage);
     }
-  }, [
-    pageSize,
-    currentPage,
-    selectedGender,
-    birthDateRange,
-    emailQuery,
-    nameQuery,
-    pageSize,
-    currentPage,
-  ]);
+  }, [pageSize, currentPage, searchQuery, selectedGender, birthDateRange, emailQuery, nameQuery]);
 
-  // useEffect(() => {
-  //   fetchUsers(pageSize, currentPage);
-  // }, [pageSize, currentPage]);
-
-  // useEffect(() => {
-  //   let currentPageData = users;
-
-  //   if (searchQuery) {
-  //     currentPageData = currentPageData.filter(user =>
-  //       `${user.firstName} ${user.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())
-  //     );
-  //   }
-
-  //   if (emailQuery) {
-  //     currentPageData = currentPageData.filter(user =>
-  //       user.email.toLowerCase().includes(emailQuery.toLowerCase())
-  //     );
-  //   }
-
-  //   if (selectedGender) {
-  //     currentPageData = currentPageData.filter(user => user.gender === selectedGender);
-  //   }
-
-  //   if (birthDateRange.start && birthDateRange.end) {
-  //     const startDate = new Date(birthDateRange.start);
-  //     const endDate = new Date(birthDateRange.end);
-  //     currentPageData = currentPageData.filter(user => {
-  //       const userBirthDate = new Date(user.birthDate);
-  //       return userBirthDate >= startDate && userBirthDate <= endDate;
-  //     });
-  //   }
-
-  //   setFilteredUsers(currentPageData);
-  // }, [searchQuery, emailQuery, users, selectedGender, birthDateRange]);
-
-  useEffect(() => {
-    fetchUsers(pageSize, currentPage);
-  }, [searchQuery]);
-
+  // Handle changing the page size
   const handlePageSizeChange = (value) => {
     setPageSize(value);
-    setCurrentPage(1); // Reset to the first page when the page size changes
+    setCurrentPage(1);
   };
 
+  // Handle search input change
   const handleSearchChange = (query) => {
     setSearchQuery(query);
     setNameQuery("");
@@ -154,14 +111,17 @@ const Users = () => {
     setSelectedGender("");
   };
 
+  // Handle email input change
   const handleEmailChange = (query) => {
     setEmailQuery(query);
   };
 
+  // Handle page change for pagination
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
+  // Handle filter dropdown changes
   const handleFilterChange = (filterType, value) => {
     switch (filterType) {
       case "name":
@@ -202,7 +162,6 @@ const Users = () => {
     setFilterDropdown((prev) => (prev === filterType ? null : filterType));
   };
 
-  // Calculate total pages based on the total number of users and the page size
   const totalPages = Math.ceil(totalUsers / pageSize);
 
   const filters = useMemo(() => {
