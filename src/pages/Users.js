@@ -105,7 +105,10 @@ const Users = () => {
   // Handle search input change
   const handleSearchChange = (query) => {
     setSearchQuery(query);
-    resetFilters();
+    setNameQuery("");
+    setEmailQuery("");
+    setBirthDateRange("");
+    setSelectedGender("");
   };
 
   // Handle email input change

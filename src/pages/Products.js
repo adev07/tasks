@@ -1,4 +1,3 @@
-// pages/Products.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import DataTable from '../components/DataTable';
@@ -7,11 +6,20 @@ import Header from '../components/Header';
 import Breadcrumbs from '../components/Breadcrumbs';
 
 const productColumns = [
-  { field: 'name', headerName: 'Name' },
+  { field: 'id', headerName: 'ID' },
+  { field: 'title', headerName: 'Name' },
   { field: 'price', headerName: 'Price' },
+  { field: 'availabilityStatus', headerName: 'Availability' },
   { field: 'category', headerName: 'Category' },
   { field: 'brand', headerName: 'Brand' },
-  { field: 'description', headerName: 'Description' },
+  { field: 'rating', headerName: 'Rating' },
+  { field: 'warrantyInformation', headerName: 'Waranty' },
+  { field: 'discountPercentage', headerName: 'Discount' },
+  {field: 'shippingInformation', headerName: 'Delivery Information'},
+  {field: 'returnPolicy', headerName: 'Return Policy'},
+  {field: 'stock', headerName: 'Stock'},
+  
+ 
 ];
 
 const Products = () => {
@@ -26,12 +34,11 @@ const Products = () => {
   const [selectedBrand, setSelectedBrand] = useState('');
   const [filterDropdown, setFilterDropdown] = useState(null);
   const [totalProducts, setTotalProducts] = useState(0);
-
   const [categoryOptions, setCategoryOptions] = useState([]);
+  const [brandOptions, setBrandOptions] = useState([]); // New state for brands
 
-
-  const getCategoryOptions = async() => {
-    try{
+  const getCategoryOptions = async () => {
+    try {
       const response = await axios.get('https://dummyjson.com/products/categories');
       setCategoryOptions(response.data);
 
@@ -54,8 +61,15 @@ const Products = () => {
           skip: (currentPage - 1) * pageSize,
         }
       });
-      setProducts(response.data.products);
-      setFilteredProducts(response.data.products);
+
+      const products = response.data.products;
+
+      // Extract unique brands from products
+      const uniqueBrands = [...new Set(products.map(product => product.brand))];
+      setBrandOptions(uniqueBrands);
+
+      setProducts(products);
+      setFilteredProducts(products);
       setTotalProducts(response.data.total);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -69,7 +83,7 @@ const Products = () => {
     let params = {
       limit: pageSize,
       skip: (currentPage - 1) * pageSize,
-    q: searchQuery,
+      q: searchQuery,
     };
 
     // if(selectedBrand){
@@ -122,7 +136,7 @@ const Products = () => {
 
   useEffect(() => {
     fetchFilteredUsers(pageSize, currentPage);
-  }, [pageSize, currentPage, selectedPriceRange, selectedBrand,searchQuery]);
+  }, [pageSize, currentPage, selectedPriceRange, selectedBrand, searchQuery]);
 
   useEffect(() => {
     fetchProductsByCategory(selectedCategory);
@@ -152,6 +166,11 @@ const Products = () => {
         setSelectedPriceRange('');
         setSelectedBrand('');
         break;
+      case 'brand':
+        setSelectedBrand(value);
+        setSelectedCategory('');
+        setSelectedPriceRange('');
+        break;
       default:
         setSearchQuery(value);
         setSelectedCategory('');
@@ -169,7 +188,7 @@ const Products = () => {
   const filters = [
     {
       label: 'Category',
-      options: categoryOptions.map(category=>category.slug),
+      options: categoryOptions.map(category => category.slug),
       selectedValue: selectedCategory,
       type: 'category'
     },
@@ -181,7 +200,7 @@ const Products = () => {
     },
     {
       label: 'Brand',
-      options: ['Brand A', 'Brand B'],
+      options: brandOptions, // Use dynamic brand options here
       selectedValue: selectedBrand,
       type: 'brand'
     }
@@ -211,10 +230,10 @@ const Products = () => {
         loading={loading}
       />
       <Pagination
-          pageCount={totalPages}
-          onPageChange={handlePageChange}
-          currentPage={currentPage}
-        />
+        pageCount={totalPages}
+        onPageChange={handlePageChange}
+        currentPage={currentPage}
+      />
     </div>
   );
 };
